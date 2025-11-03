@@ -33,7 +33,7 @@ const createSpace = asyncHandler(async (req, res) => {
 
 
 const getSpaces = asyncHandler(async (req, res) => {
-  const spaces = await Space.find({ members: req.user._id }).populate('owner', 'name email');
+  const spaces = await Space.find({ members: req.user._id }).populate('owner', 'name email profilePicture');
   res.json(spaces);
 });
 

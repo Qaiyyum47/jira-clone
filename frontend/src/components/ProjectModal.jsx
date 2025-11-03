@@ -13,6 +13,7 @@ const ProjectModal = ({ isOpen, onClose, projectToEdit, spaceId }) => {
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
   const [projectLead, setProjectLead] = useState('');
+  const [issueKey, setIssueKey] = useState('');
   const [projectColor, setProjectColor] = useState('#000000'); 
   const [selectedSpace, setSelectedSpace] = useState('');
   const [show, setShow] = useState(false);
@@ -25,6 +26,7 @@ const ProjectModal = ({ isOpen, onClose, projectToEdit, spaceId }) => {
         setProjectName(projectToEdit.name);
         setProjectDescription(projectToEdit.description);
         setProjectLead(projectToEdit.owner._id); 
+        setIssueKey(projectToEdit.issueKey);
         setProjectColor(projectToEdit.color || '#000000');
         setSelectedSpace(projectToEdit.space);
       } else { 
@@ -52,7 +54,10 @@ const ProjectModal = ({ isOpen, onClose, projectToEdit, spaceId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (projectName && projectDescription && projectLead && selectedSpace) {
-      const projectData = { name: projectName, description: projectDescription, owner: projectLead, color: projectColor, spaceId: selectedSpace };
+      let projectData = { name: projectName, description: projectDescription, owner: projectLead, color: projectColor, spaceId: selectedSpace };
+      if (issueKey) {
+        projectData.issueKey = issueKey;
+      }
       if (projectToEdit) {
         dispatch(updateProject({ id: projectToEdit._id, projectData }));
       } else {
@@ -104,7 +109,7 @@ const ProjectModal = ({ isOpen, onClose, projectToEdit, spaceId }) => {
               onChange={(e) => setSelectedSpace(e.target.value)}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               required
-              disabled={!!projectToEdit || !!spaceId}
+              disabled={!!spaceId}
             >
               <option value="">Select a Space</option>
               {spaces && spaces.map((space) => (
@@ -166,7 +171,7 @@ const ProjectModal = ({ isOpen, onClose, projectToEdit, spaceId }) => {
               className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
               disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create'}
+              {loading ? (projectToEdit ? 'Updating...' : 'Creating...') : (projectToEdit ? 'Update' : 'Create')}
             </button>
           </div>
         </form>

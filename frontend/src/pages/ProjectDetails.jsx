@@ -121,7 +121,7 @@ const ProjectDetails = () => {
   const handleDrop = (e, newStatus) => {
     e.preventDefault();
     const issueId = e.dataTransfer.getData('issueId');
-    dispatch(updateIssue({ id: issueId, issueData: { status: newStatus } }));
+    dispatch(updateIssue({ issueId: issueId, issueData: { status: newStatus } }));
   };
 
   const uniqueIssues = [...new Map(issues.map((issue) => [issue['_id'], issue])).values()];

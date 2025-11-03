@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProjects } from '../store/projectSlice';
+import { getSidebarProjects } from '../store/projectSlice';
 import { getAllSpaces } from '../store/spaceSlice';
 import { getSidebarIssues } from '../store/issueSlice';
 import { Home, FolderKanban, Bug, BarChart3, Settings, ChevronsLeft, UserCircle, LayoutGrid, Columns3, ChevronDown, ChevronRight } from 'lucide-react';
@@ -9,7 +9,7 @@ import { Home, FolderKanban, Bug, BarChart3, Settings, ChevronsLeft, UserCircle,
 const Sidebar = ({ isSidebarOpen }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { projects } = useSelector((state) => state.projects);
+  const { sidebarProjects: projects } = useSelector((state) => state.projects);
   const { spaces } = useSelector((state) => state.spaces);
   const { userInfo } = useSelector((state) => state.auth);
   const { sidebarIssues } = useSelector((state) => state.issues);
@@ -33,8 +33,7 @@ const Sidebar = ({ isSidebarOpen }) => {
   useEffect(() => {
     if (userInfo) {
       dispatch(getAllSpaces());
-      dispatch(getProjects());
-      
+      dispatch(getSidebarProjects());
       
     }
   }, [dispatch, userInfo]);
@@ -48,7 +47,7 @@ const Sidebar = ({ isSidebarOpen }) => {
   }, [spaces, projects]);
 
   const mainNavItems = [
-    { to: "/for-you", Icon: UserCircle, label: "For you" },
+    { to: "/", Icon: UserCircle, label: "For you" },
     { to: "/spaces", Icon: LayoutGrid, label: "Spaces" },
   ];
 
@@ -70,10 +69,10 @@ const Sidebar = ({ isSidebarOpen }) => {
                       to={to}
                       end={!isSpacesLink}
                       className={({ isActive }) =>
-                        `flex items-center p-1.5 transition-colors duration-200 ${
+                        `flex items-center py-1 px-1.5 text-sm transition-colors duration-200 rounded-md ${
                           isActive
-                            ? 'border-l-4 border-[#0052CC] text-[#0052CC] font-medium'
-                            : 'border-l-4 border-transparent hover:bg-gray-100 text-gray-700'
+                            ? 'text-[#0052CC] bg-[#E4F0F6] border-l-2 border-[#0052CC]'
+                            : 'hover:bg-gray-100'
                         }`
                       }
                     >
@@ -114,10 +113,10 @@ const Sidebar = ({ isSidebarOpen }) => {
                                         to={`/project/${project._id}`}
                                         title={project.name}
                                         className={({ isActive }) =>
-                                          `flex items-center p-1.5 text-xs transition-colors duration-200 ${
+                                          `flex items-center py-1 px-1.5 text-sm transition-colors duration-200 rounded-md ${
                                             isActive
-                                              ? 'border-l-4 border-[#0052CC] text-[#0052CC] font-medium'
-                                              : 'border-l-4 border-transparent hover:bg-gray-100 text-gray-600'
+                                              ? 'text-[#0052CC] bg-[#E4F0F6] border-l-2 border-[#0052CC]'
+                                              : 'hover:bg-gray-100'
                                           }`
                                         }
                                       >
@@ -130,7 +129,7 @@ const Sidebar = ({ isSidebarOpen }) => {
                           </li>
                         ))
                       ) : (
-                        <li className="p-1.5 text-xs text-gray-500">Create a space to see projects</li>
+                        <li className="p-1.5 text-sm text-gray-500">Create a space to see projects</li>
                       )}
                     </ul>
                   )}
@@ -148,10 +147,10 @@ const Sidebar = ({ isSidebarOpen }) => {
               <NavLink
                 to={to}
                 className={({ isActive }) =>
-                  `flex items-center p-1.5 transition-colors duration-200 ${
+                  `flex items-center py-1 px-1.5 text-sm transition-colors duration-200 ${
                     isActive
-                      ? 'border-l-4 border-[#0052CC] text-[#0052CC] font-medium'
-                      : 'border-l-4 border-transparent hover:bg-gray-100 text-gray-700'
+                      ? 'text-[#0052CC] bg-[#E4F0F6] border-l-2 border-[#0052CC]'
+                      : 'hover:bg-gray-100'
                   }`
                 }
               >

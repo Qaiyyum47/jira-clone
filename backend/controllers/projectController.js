@@ -108,7 +108,7 @@ const getProjectById = async (req, res) => {
 
 
 const updateProject = async (req, res) => {
-  const { name, description, issueKey, type, color } = req.body; 
+  const { name, description, issueKey, type, color, spaceId } = req.body; 
 
   try {
     const project = await Project.findById(req.params.id);
@@ -121,11 +121,38 @@ const updateProject = async (req, res) => {
 
       project.name = name || project.name;
       project.description = description || project.description;
-      project.issueKey = issueKey || project.issueKey; 
       project.type = type || project.type; 
       project.color = color || project.color; 
+      project.space = spaceId || project.space; 
+
+      if (issueKey) {
+        project.issueKey = issueKey.toUpperCase().trim();
+      } else if (!project.issueKey) {
+        const namePrefix = project.name.substring(0, 3).toUpperCase();
+        let uniqueKeyFound = false;
+        let counter = 0;
+        let generatedIssueKey;
+
+        while (!uniqueKeyFound && counter < 100) {
+          const randomNum = Math.floor(1000 + Math.random() * 9000);
+          generatedIssueKey = `${namePrefix}-${randomNum}`;
+          const existingProject = await Project.findOne({ issueKey: generatedIssueKey });
+          if (!existingProject) {
+            uniqueKeyFound = true;
+          }
+          counter++;
+        }
+
+        if (!uniqueKeyFound) {
+          generatedIssueKey = `${namePrefix}-${Date.now()}`;
+        }
+        project.issueKey = generatedIssueKey;
+      }
 
       const updatedProject = await project.save();
+      await updatedProject.populate('owner', 'name email profilePicture');
+      await updatedProject.populate('members', 'name email profilePicture');
+
       res.json(updatedProject);
     } else {
       res.status(404).json({ message: 'Project not found' });

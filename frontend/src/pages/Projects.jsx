@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { getProjects } from '../store/projectSlice';
-import { getSpaces } from '../store/spaceSlice';
+import { getAllSpaces } from '../store/spaceSlice';
 import ProjectModal from '../components/ProjectModal';
 import SpaceModal from '../components/SpaceModal';
 import { PlusCircle } from 'lucide-react';
@@ -19,7 +19,7 @@ const Projects = () => {
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
 
   useEffect(() => {
-    dispatch(getSpaces());
+    dispatch(getAllSpaces());
     dispatch(getProjects());
   }, [dispatch]);
 

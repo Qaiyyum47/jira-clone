@@ -117,13 +117,13 @@ const IssueDetails = () => {
 
   const handleDeleteComment = (commentId) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
-      dispatch(deleteComment({ issueId, commentId }));
+      dispatch(deleteComment({ issueId: currentIssue._id, commentId }));
     }
   };
 
   const handleUpdateComment = () => {
     if (editingCommentText.trim()) {
-      dispatch(updateComment({ issueId: id, commentId: editingCommentId, text: editingCommentText }));
+      dispatch(updateComment({ issueId: currentIssue._id, commentId: editingCommentId, text: editingCommentText }));
       setEditingCommentId(null);
       setEditingCommentText('');
     }
@@ -150,24 +150,24 @@ const IssueDetails = () => {
 
   const handleTitleSave = () => {
     if (editedTitle.trim() && editedTitle !== currentIssue.title) {
-      dispatch(updateIssue({ id: currentIssue._id, issueData: { title: editedTitle } }));
+      dispatch(updateIssue({ issueId: currentIssue._id, issueData: { title: editedTitle } }));
     }
     setIsEditingTitle(false);
   };
 
   const handleDescriptionSave = () => {
-    dispatch(updateIssue({ id: currentIssue._id, issueData: { description: editedDescription } }));
+    dispatch(updateIssue({ issueId: currentIssue._id, issueData: { description: editedDescription } }));
     setIsEditingDescription(false);
   };
 
   const handleSaveComment = (text) => {
-    dispatch(createComment({ issueId: id, text }));
+    dispatch(createComment({ issueId: currentIssue._id, text }));
   };
 
   const updateIssueHandler = (e) => {
     e.preventDefault();
     dispatch(updateIssue({
-      id: currentIssue._id,
+      issueId: currentIssue._id,
       issueData: {
         title: issueTitle,
         description: issueDescription,
@@ -363,7 +363,7 @@ const IssueDetails = () => {
               <select
                 id="statusSelect"
                 value={currentIssue.status}
-                onChange={(e) => dispatch(updateIssue({ id: currentIssue._id, issueData: { status: e.target.value } }))}
+                onChange={(e) => dispatch(updateIssue({ issueId: currentIssue._id, issueData: { status: e.target.value } }))}
                 className={`px-3 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-sm w-32 ${
                   currentIssue.status === 'To Do' ? 'bg-gray-200 text-gray-800' :
                   currentIssue.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
