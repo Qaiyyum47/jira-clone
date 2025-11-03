@@ -3,6 +3,7 @@ import api from '../utils/api';
 
 const initialState = {
   projects: [],
+  sidebarProjects: [],
   currentProject: null,
   loading: false,
   error: null,
@@ -34,7 +35,7 @@ export const createProject = createAsyncThunk(
 
 export const getProjects = createAsyncThunk(
   'projects/getProjects',
-  async (spaceId, { getState, rejectWithValue }) => {
+  async ({ spaceId }, { getState, rejectWithValue }) => {
     try {
       const {
         auth: { userInfo },
@@ -48,6 +49,28 @@ export const getProjects = createAsyncThunk(
 
       const url = spaceId ? `/projects?spaceId=${spaceId}` : '/projects';
       const { data } = await api.get(url, config);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const getSidebarProjects = createAsyncThunk(
+  'projects/getSidebarProjects',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const {
+        auth: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await api.get('/projects', config);
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -223,6 +246,10 @@ const projectSlice = createSlice({
       .addCase(getProjects.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+      })
+      .addCase(getSidebarProjects.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.sidebarProjects = payload;
       })
       .addCase(getProjectById.pending, (state) => {
         state.loading = true;
